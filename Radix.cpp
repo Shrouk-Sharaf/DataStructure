@@ -1,46 +1,58 @@
 #include <iostream>
-#include <vector>
-#include <climits>
 using namespace std;
 
-int get_bit(int value, int k) {
-    return (value >> k) & 1;
+int getMax(int arr[], int n) {
+    int max = arr[0];
+    for (int i = 1; i < n; i++) if (arr[i] > max) max = arr[i];
+    return max;
 }
 
-void radix_sort_step(vector<int>& arr, int bit_pos) {
-    const int num_bins = 4;
-    vector<int> count(num_bins, 0);
+void countingSort(int arr[], int n, int exp) {
+    int output[n];
+    int count[10] = {0};
 
-    for (int num : arr) {
-        int bin = (get_bit(num, bit_pos + 1) << 1) | get_bit(num, bit_pos);
-        count[bin]++;
+    for (int i = 0; i < n; i++) {
+        int digit = (arr[i] / exp) % 10;
+        count[digit]++;
     }
 
-    for (int i = 1; i < num_bins; i++) count[i] += count[i - 1];
+    for (int i = 1; i < 10; i++) count[i] += count[i - 1];
 
-    vector<int> sorted(arr.size());
-    for (int i = arr.size() - 1; i >= 0; i--) {
-        int bin = (get_bit(arr[i], bit_pos + 1) << 1) | get_bit(arr[i], bit_pos);
-        sorted[--count[bin]] = arr[i];
+    for (int i = n - 1; i >= 0; i--) {
+        int digit = (arr[i] / exp) % 10;
+        output[count[digit] - 1] = arr[i];
+        count[digit]--;
     }
-    arr = sorted;
+
+    for (int i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
 }
 
-void radix_sort(vector<int>& arr) {
-    int num_bits = sizeof(int) * CHAR_BIT;
+void radixSort(int arr[], int n) {
+    int max = getMax(arr, n);
 
-    for (int bit_pos = 0; bit_pos < num_bits; bit_pos += 2) radix_sort_step(arr, bit_pos);
+    for (int exp = 1; max / exp > 0; exp *= 10) {
+        countingSort(arr, n, exp);
+    }
 }
 
-void radix_sort_int(vector<int>& arr) {
-    for (int& num : arr) num ^= (1 << 31);
-    radix_sort(arr);
-    for (int& num : arr) num ^= (1 << 31);
-    for (int num : arr) cout << num << " ";
+void displayData(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
     cout << endl;
 }
 
 int main() {
-    vector<int> data = {232, -8115, 3461, -329, 427, -143, 4, 0};
-    radix_sort_int(data);
+    int arr[] = {170, 45, 75, 90, 802, 24, 2, 66, 0 , 1};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Original array: ";
+    displayData(arr, n);
+
+    radixSort(arr, n);
+
+    cout << "Sorted array: ";
+    displayData(arr, n);
 }
