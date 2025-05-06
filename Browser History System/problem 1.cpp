@@ -63,7 +63,7 @@ public:
 
 int main() {
     BrowserHistory bh;
-    ifstream inputFile("input.txt");
+    ifstream inputFile("./Browser History System/test.txt");
     string command;
 
     while (inputFile >> command) {
