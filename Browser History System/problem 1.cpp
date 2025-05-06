@@ -18,9 +18,7 @@ public:
     CustomStack() : top(nullptr), size(0) {}
 
     ~CustomStack() {
-        while (!isEmpty()) {
-            pop();
-        }
+        while (!isEmpty()) pop();
     }
 
     void push(const string& url) {
@@ -31,9 +29,7 @@ public:
     }
 
     string pop() {
-        if (isEmpty()) {
-            return "";
-        }
+        if (isEmpty()) return "";
         Node* temp = top;
         string url = temp->url;
         top = top->next;
@@ -42,32 +38,19 @@ public:
         return url;
     }
 
-    string peek() const {
-        if (isEmpty()) {
-            return "";
-        }
-        return top->url;
-    }
-
     bool isEmpty() const {
         return top == nullptr;
     }
 
-    int getSize() const {
-        return size;
-    }
-
-    // For printing the stack contents (in reverse order)
     void print() const {
         if (isEmpty()) {
             cout << "Empty";
             return;
         }
 
-        // First, we'll reverse the stack to print it in the correct order
         Node* current = top;
         Node* prev = nullptr;
-        Node* next = nullptr;
+        Node* next;
 
         while (current != nullptr) {
             next = current->next;
@@ -76,17 +59,14 @@ public:
             current = next;
         }
 
-        // Now print the reversed stack
         current = prev;
         while (current != nullptr) {
             cout << current->url << " ";
             current = current->next;
         }
 
-        // Restore the original stack order
         current = prev;
         prev = nullptr;
-        next = nullptr;
         while (current != nullptr) {
             next = current->next;
             current->next = prev;
@@ -104,21 +84,15 @@ private:
 
 public:
     void visit(const string& url) {
-        // Clear forward stack when visiting a new URL
-        while (!forwardStack.isEmpty()) {
-            forwardStack.pop();
-        }
+        while (!forwardStack.isEmpty()) forwardStack.pop();
 
-        if (!currentUrl.empty()) {
-            backStack.push(currentUrl);
-        }
+        if (!currentUrl.empty()) backStack.push(currentUrl);
+
         currentUrl = url;
     }
 
     string goBack() {
-        if (backStack.isEmpty()) {
-            return currentUrl; // Can't go back
-        }
+        if (backStack.isEmpty()) return currentUrl;
 
         forwardStack.push(currentUrl);
         currentUrl = backStack.pop();
@@ -126,9 +100,7 @@ public:
     }
 
     string goForward() {
-        if (forwardStack.isEmpty()) {
-            return currentUrl; // Can't go forward
-        }
+        if (forwardStack.isEmpty()) return currentUrl;
 
         backStack.push(currentUrl);
         currentUrl = forwardStack.pop();
