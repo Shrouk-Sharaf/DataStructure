@@ -14,8 +14,6 @@ public:
     SortingSystem(int n);
     ~SortingSystem();
 
-    void setData();
-
     void selectionSort();
     void bubbleSort();
     void radixSort();
